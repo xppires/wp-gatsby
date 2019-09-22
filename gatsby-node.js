@@ -166,7 +166,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   mysqlWpPosts.forEach(({ node: post }, index, mysqlWpPosts) => {
     const previous = index === mysqlWpPosts.length - 1 ? null : mysqlWpPosts[index + 1].node
     const next = index === 0 ? null : mysqlWpPosts[index - 1].node
-    console.log(post)
+
     createPage({
       path: `/${post.post_name}`,
       component: BlogPostMysqlTemplate,

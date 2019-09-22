@@ -21,13 +21,14 @@ const ArticleFooter = styled.footer`
 class Article extends React.Component {
   render() {
     const { post } = this.props
-
+    const postDate = post.frontmatter ? post.frontmatter.date : (post.date || '')
+    const postTags = post.frontmatter ? post.frontmatter.tags : (post.tags || [])
     return (
       <ArticleWrapper>
         <Content
           content={post.body}
-          date={post.frontmatter.date}
-          tags={post.frontmatter.tags}
+          date={postDate}
+          tags={postTags}
         />
         <ArticleFooter>
           <Bio />
