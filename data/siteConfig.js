@@ -4,7 +4,7 @@ module.exports = {
   authorName: 'Maxence Poutord',
   twitterUsername: '_maxpou',
   authorAvatar: 'avatar.jpeg', // file in content/images
-  multilangPosts: true, // enable/disable flags in post lists
+  multilangPosts: false, // enable/disable flags in post lists
   authorDescription: `
   For the last decade, Maxence Poutord has worked with a variety of web technologies. He is currently focused on front-end development.
   On his day to day job, he is working as a senior front-end engineer at VSware. He is also a frequent tech speaker and a mentor.
@@ -33,6 +33,10 @@ module.exports = {
     {
       label: 'About',
       url: '/about-gatsby-starter-morning-dew',
+    },
+    {
+      label: 'teste',
+      url: '/mysql-test',
     },
     {
       label: 'Installation',

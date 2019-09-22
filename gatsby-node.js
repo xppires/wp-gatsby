@@ -4,6 +4,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage } = actions
 
   const BlogPostTemplate = require.resolve('./src/templates/blog-post.js')
+  const BlogPostMysqlTemplate = require.resolve('./src/templates/blog-post-mysql.js')
   const BlogPostShareImage = require.resolve(
     './src/templates/blog-post-share-image.js'
   )
@@ -139,6 +140,45 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         },
       })
     })
+
+
+  const allMysqlWpPostsQuery = await graphql(`
+    {
+    allMysqlWpPosts(filter: {post_type: {eq: "post"}, post_status: {eq: "publish"}}) {
+        edges {
+          node {
+            ID
+            post_name
+            post_title
+            post_content
+            post_excerpt
+          }
+        }
+      }
+    }
+  `)
+
+  if (allMysqlWpPostsQuery.errors) {
+    reporter.panic(allMysqlWpPostsQuery.errors)
+  }
+
+  const mysqlWpPosts = allMysqlWpPostsQuery.data.allMysqlWpPosts.edges
+  mysqlWpPosts.forEach(({ node: post }, index, mysqlWpPosts) => {
+    const previous = index === mysqlWpPosts.length - 1 ? null : mysqlWpPosts[index + 1].node
+    const next = index === 0 ? null : mysqlWpPosts[index - 1].node
+    console.log(post)
+    createPage({
+      path: `/${post.post_name}`,
+      component: BlogPostMysqlTemplate,
+      context: {
+        slug: post.post_name,
+        previous,
+        next,
+      },
+    })
+  }
+  )
+
 }
 
 exports.onCreateNode = ({ node, actions, getNode }) => {
@@ -153,3 +193,4 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
     })
   }
 }
+

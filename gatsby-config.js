@@ -98,5 +98,43 @@ module.exports = {
         modules: ['gatsby-starter-morning-dew'],
       },
     },
+    {
+      resolve: `gatsby-source-mysql`,
+      options: {
+        connectionDetails: {
+          host: 'localhost',
+          user: 'root',
+          password: '',
+          database: 'wp3_passoapasso'
+        },
+        queries: [
+          {
+            statement: 'SELECT meta_id, post_id as ID, meta_key, meta_value  FROM wp_postmeta ', //where meta_key=\'_wp_attachment_metadata\'',
+            idFieldName: 'meta_id',
+            name: 'WpMeta',
+            // remoteImageFieldNames: 'meta_value'
+            parentName: 'WpPosts',
+            foreignKey: 'ID',
+            cardinality: 'OneToMany',
+          },
+          {
+            statement: 'SELECT * FROM wp_comments ', // where  post_type = \'post\' and  post_status = \'publish\' ',
+            idFieldName: 'comment_ID',
+            name: 'WpComments',
+            parentName: 'WpPosts',
+            foreignKey: 'comment_post_ID',
+            cardinality: 'OneToMany',
+          },
+          {
+            statement: 'SELECT * FROM wp_posts ', // where  post_type = \'post\' and  post_status = \'publish\' ',
+            idFieldName: 'ID',
+            name: 'WpPosts',
+            // parentName: 'WpMeta',
+            // foreignKey: 'ID',
+            // cardinality: 'OneToMany',
+          }
+        ]
+      }
+    }
   ],
 }
