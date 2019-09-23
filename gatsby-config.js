@@ -126,7 +126,7 @@ module.exports = {
             cardinality: 'OneToMany',
           },
           {
-            statement: 'SELECT * FROM wp_posts ', // where  post_type = \'post\' and  post_status = \'publish\' ',
+            statement: 'SELECT *,strip_tags(post_content) as post_txt FROM wp_posts ', // where  post_type = \'post\' and  post_status = \'publish\' ',
             idFieldName: 'ID',
             name: 'WpPosts',
             // parentName: 'WpMeta',

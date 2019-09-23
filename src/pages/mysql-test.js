@@ -12,7 +12,7 @@ class mysqlTest extends React.Component {
 
                     const props = {
                         title: node.post_title,
-                        excerpt: node.post_content,
+                        excerpt: node.post_txt.substring(0, 260) + '...',
                         slug: node.post_name,
                         date: node.post_date,
                         language: node.language || 'pt',
@@ -40,7 +40,7 @@ export const pageQuery = graphql`
           meta_key
           meta_value
         }
-        post_content
+        post_txt
         WpComments {
           comment_author_url
           comment_date_gmt

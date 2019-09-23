@@ -150,15 +150,13 @@ class BlogPostTemplate extends React.Component {
             <section>
               {(post.tags || post.date) && <ContentHeader date={post.date} tags={post.tags} />}
               <ContentBody>
-                <div>{post.body}</div>
+                <div dangerouslySetInnerHTML={{ __html: post.body }} />
               </ContentBody>
             </section>
             <ArticleFooter>
               <Bio />
             </ArticleFooter>
           </ArticleWrapper>
-
-
         </Wrapper>
 
         <Wrapper>
