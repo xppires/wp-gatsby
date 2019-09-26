@@ -9,14 +9,17 @@ class mysqlTest extends React.Component {
         return (
             <Layout>
                 {posts.map(({ node }) => {
-
+                    let image = node.WpImages.map(({ mysqlImage }, index) => {
+                        if (index === 0) return mysqlImage.childImageSharp;
+                    })
                     const props = {
                         title: node.post_title,
-                        excerpt: node.post_txt.substring(0, 260) + '...',
+                        excerpt: node.post_txt.substring(0, 360) + '...',
                         slug: node.post_name,
                         date: node.post_date,
                         language: node.language || 'pt',
                         tags: node.tags || [],
+                        img: image[0]
                     }
 
                     return <PostsListItem key={props.slug} {...props} />
@@ -30,7 +33,11 @@ export default mysqlTest
 
 export const pageQuery = graphql`
   query blogListMysqlQuery {
-  allMysqlWpPosts(filter: {post_type: {eq: "post"}, post_status: {eq: "publish"}}, skip: 0, limit: 10) {
+  allMysqlWpPosts(
+      filter: {post_type: {eq: "post"}, post_status: {eq: "publish"}},
+      sort: {fields: post_date, order: DESC},
+      skip: 0,
+      limit: 10) {
     edges {
       node {
         ID
@@ -48,7 +55,16 @@ export const pageQuery = graphql`
           comment_approved
           comment_author
         }
-        post_excerpt
+         WpImages {
+             mysqlImage {
+                childImageSharp {
+                    fluid(maxWidth: 300) {
+                        ...GatsbyImageSharpFluid
+                    }
+            }
+             }
+
+        }
       }
     }
   }

@@ -118,7 +118,7 @@ module.exports = {
             cardinality: 'OneToMany',
           },
           {
-            statement: 'SELECT * FROM wp_comments ', // where  post_type = \'post\' and  post_status = \'publish\' ',
+            statement: 'SELECT * FROM wp_comments ',
             idFieldName: 'comment_ID',
             name: 'WpComments',
             parentName: 'WpPosts',
@@ -126,9 +126,19 @@ module.exports = {
             cardinality: 'OneToMany',
           },
           {
-            statement: 'SELECT *,strip_tags(post_content) as post_txt FROM wp_posts ', // where  post_type = \'post\' and  post_status = \'publish\' ',
+            statement: 'SELECT ID, REPLACE( substr( substr(post_content, locate(\'src="\', post_content) + 5), 1,locate( \'.jpg\', substr(post_content, locate(\'src="\', post_content) + 5)) + 3 ) ,\'ç\',\'c\') as \'src\'  FROM wp_posts where  locate(\'jpg"\', post_content) > 0',
+            idFieldName: 'ID',
+            name: 'WpImages',
+            parentName: 'WpPosts',
+            foreignKey: 'ID',
+            cardinality: 'OneToMany',
+            remoteImageFieldNames: ['src']
+          },
+          {
+            statement: 'SELECT *,strip_tags(post_content) as post_txt FROM wp_posts ',
             idFieldName: 'ID',
             name: 'WpPosts',
+            // remoteImageFieldNames: ['src']
             // parentName: 'WpMeta',
             // foreignKey: 'ID',
             // cardinality: 'OneToMany',

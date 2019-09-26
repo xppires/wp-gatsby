@@ -116,6 +116,10 @@ const ContentBody = styled.div`
       border-bottom: 2px solid ${colors.white};
     }
   }
+  img {
+    display:block;
+    margin: 14px;
+  }
 `
 
 class BlogPostTemplate extends React.Component {

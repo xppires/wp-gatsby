@@ -5,10 +5,19 @@ import TagList from './TagList'
 import useSiteMetadata from '../hooks/use-site-config'
 import styled from 'styled-components'
 import { colors } from '../tokens'
+import Image from 'gatsby-image'
 
 const Post = styled.article`
   border-bottom: 1px solid rgba(214, 209, 230, 0.5);
   padding-bottom: 1.25rem;
+  clear: left;
+  .postImage {
+    width:300px;
+    float:left;
+    margin:14px;
+    max-height: 235px;
+    overflow: hidden;
+  }
 `
 
 const ReadPost = styled(Link)`
@@ -54,11 +63,11 @@ const PostTitleLink = styled(Link)`
 `
 
 const PostsListItem = props => {
-  const { title, excerpt, slug, date, language, tags } = props
+  const { title, excerpt, slug, date, language, tags, img } = props
   const { multilangPosts } = useSiteMetadata()
-
   return (
     <Post>
+      {img && <div className="postImage"><Image fluid={img.fluid} /></div>}
       <PostHeader>
         <h2>
           <PostTitleLink to={`/${slug}`}>
