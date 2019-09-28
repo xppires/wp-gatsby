@@ -12,7 +12,7 @@ const Post = styled.article`
   padding-bottom: 1.25rem;
   clear: left;
   .postImage {
-    width:300px;
+    width:200px;
     float:left;
     margin:14px;
     max-height: 235px;
