@@ -13,7 +13,13 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   const ListPostsTemplate = require.resolve(
     './src/templates/blog-list-template.js'
   )
+  const ListPostsMysqlTemplate = require.resolve(
+    './src/templates/blog-list-mysql-template.js'
+  )
 
+  const ListPostsCategoryTemplate = require.resolve(
+    './src/templates/blog-category-template.js'
+  )
   const allMarkdownQuery = await graphql(`
     {
       allMarkdown: allMdx(
@@ -141,10 +147,15 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       })
     })
 
-
-  const allMysqlWpPostsQuery = await graphql(`
+  ///
+  //  msyql posts
+  const allMysqlWpQuery = await graphql(`
     {
-    allMysqlWpPosts(filter: {post_type: {eq: "post"}, post_status: {eq: "publish"}}) {
+    allMysqlWpPosts(
+      filter: {post_type: {eq: "post"},
+      post_status: {eq: "publish"}},
+      limit: 1000
+      ) {
         edges {
           node {
             ID
@@ -154,15 +165,48 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
             post_excerpt
           }
         }
+      },
+    allMysqlCategories:allMysqlWpTerm(
+      filter: {WpTaxonomies: {elemMatch: {taxonomy: {eq: "category"}}}}
+      ) {
+        edges {
+          node {
+            name
+            slug
+            WpTaxonomies {
+              taxonomy
+              WpTermRelations {
+                ID: object_id
+              }
+            }
+          }
+        }
       }
     }
   `)
 
-  if (allMysqlWpPostsQuery.errors) {
-    reporter.panic(allMysqlWpPostsQuery.errors)
+  if (allMysqlWpQuery.errors) {
+    reporter.panic(allMysqlWpQuery.errors)
   }
 
-  const mysqlWpPosts = allMysqlWpPostsQuery.data.allMysqlWpPosts.edges
+  const mysqlWpPosts = allMysqlWpQuery.data.allMysqlWpPosts.edges
+  const nbPagesMyql = Math.ceil(mysqlWpPosts.length / postsPerPage)
+
+  Array.from({ length: nbPagesMyql }).forEach((_, i) => {
+    createPage({
+      path: i === 0 ? `/` : `/pages/${i + 1}`,
+      component: ListPostsMysqlTemplate,
+      context: {
+        limit: postsPerPage,
+        skip: i * postsPerPage,
+        currentPage: i + 1,
+        nbPages: nbPagesMyql,
+      },
+    })
+  })
+
+
+
   mysqlWpPosts.forEach(({ node: post }, index, mysqlWpPosts) => {
     const previous = index === mysqlWpPosts.length - 1 ? null : mysqlWpPosts[index + 1].node
     const next = index === 0 ? null : mysqlWpPosts[index - 1].node
@@ -174,6 +218,22 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         slug: post.post_name,
         previous,
         next,
+      },
+    })
+  }
+  )
+
+  // mysql categories
+  const mysqlWpCategories = allMysqlWpQuery.data.allMysqlCategories.edges
+  mysqlWpCategories.forEach(({ node: category }, index) => {
+
+    createPage({
+      path: `/category/${category.slug}`,
+      component: ListPostsCategoryTemplate,
+      context: {
+        slug: category.slug,
+        limit: postsPerPage,
+        skip: 0,
       },
     })
   }

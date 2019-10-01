@@ -3,16 +3,16 @@ import { graphql } from 'gatsby'
 import Layout from '../components/layout'
 import PostsListItem from '../components/PostsListItem'
 import Hero from '../components/Hero'
+import Pagination from '../components/Pagination'
 
 import Wrapper from '../components/Wrapper'
 
-class mysqlTest extends React.Component {
+class mysqlCategoryPosts extends React.Component {
     render() {
         const { title, description } = this.props.data.site.siteMetadata
         const posts = this.props.data.allMysqlWpPosts.edges;
         const defaultImage = this.props.data.defaultImage.childImageSharp
         const { pageContext } = this.props
-        console.log(this.props)
         return (
             <Layout>
                 <Hero title={title} subTitle={description} />
@@ -34,20 +34,20 @@ class mysqlTest extends React.Component {
                         return <PostsListItem key={props.slug} {...props} />
                     })}
                 </Wrapper>
-                {/* <Pagination
+                <Pagination
                     nbPages={pageContext.nbPages}
                     currentPage={pageContext.currentPage}
-                /> */}
+                />
 
             </Layout>
         )
     }
 }
 
-export default mysqlTest
+export default mysqlCategoryPosts
 
 export const pageQuery = graphql`
-  query blogListMysqlQueryT {
+  query categoryPostsListMysqlQuery($skip: Int!, $limit: Int!) {
         site {
             siteMetadata {
                 title
@@ -64,8 +64,9 @@ export const pageQuery = graphql`
         allMysqlWpPosts(
             filter: {post_type: {eq: "post"}, post_status: {eq: "publish"}},
             sort: {fields: post_date, order: DESC},
-            skip: 0,
-            limit: 10) {
+            limit: $limit
+            skip: $skip
+            ) {
             edges {
             node {
                 ID

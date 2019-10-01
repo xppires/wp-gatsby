@@ -134,15 +134,54 @@ module.exports = {
             cardinality: 'OneToMany',
             remoteImageFieldNames: ['src']
           },
+
           {
             statement: 'SELECT *,strip_tags(post_content) as post_txt FROM wp_posts ',
             idFieldName: 'ID',
-            name: 'WpPosts',
-            // remoteImageFieldNames: ['src']
-            // parentName: 'WpMeta',
-            // foreignKey: 'ID',
-            // cardinality: 'OneToMany',
-          }
+            name: 'WpPosts'
+          },
+          // categories and tags
+          {
+            statement: 'select * from wp_terms',
+            idFieldName: 'term_id',
+            name: 'WpTerm'
+          },
+          {
+            statement: 'select distinct wp_term_taxonomy.term_id, wp_term_taxonomy.term_taxonomy_id,wp_term_taxonomy.taxonomy \
+from  wp_term_taxonomy, wp_term_relationships \
+where wp_term_relationships.term_taxonomy_id = wp_term_taxonomy.term_taxonomy_id',
+            idFieldName: 'term_taxonomy_id',
+            name: 'WpTaxonomy',
+            parentName: 'WpTerm',
+            foreignKey: 'term_id',
+            cardinality: 'OneToMany',
+          },
+          {
+            statement: 'select * from wp_term_relationships',
+            idFieldName: 'object_id',
+            name: 'WpTermRelation',
+            parentName: 'WpTaxonomy',
+            foreignKey: 'term_taxonomy_id',
+            cardinality: 'OneToMany',
+          },
+          // {
+          //   statement: 'SELECT *,strip_tags(post_content) as post_txt, ID as object_id FROM wp_posts ',
+          //   idFieldName: 'ID',
+          //   name: 'WpTermPost',
+          //   parentName: 'WpTermRelation',
+          //   foreignKey: 'object_id',
+          //   cardinality: 'OneToMany',
+          // },
+          // {
+          //   statement: 'select *, object_id as ID from wp_term_relationships',
+          //   idFieldName: 'oid',
+          //   name: 'WpTermPost',
+          //   parentName: 'WpPosts',
+          //   foreignKey: 'ID',
+          //   cardinality: 'OneToMany',
+          // },
+
+
         ]
       }
     }

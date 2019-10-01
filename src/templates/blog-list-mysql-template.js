@@ -3,6 +3,7 @@ import { graphql } from 'gatsby'
 import Layout from '../components/layout'
 import PostsListItem from '../components/PostsListItem'
 import Hero from '../components/Hero'
+import Pagination from '../components/Pagination'
 
 import Wrapper from '../components/Wrapper'
 
@@ -34,10 +35,10 @@ class mysqlTest extends React.Component {
                         return <PostsListItem key={props.slug} {...props} />
                     })}
                 </Wrapper>
-                {/* <Pagination
+                <Pagination
                     nbPages={pageContext.nbPages}
                     currentPage={pageContext.currentPage}
-                /> */}
+                />
 
             </Layout>
         )
@@ -47,7 +48,7 @@ class mysqlTest extends React.Component {
 export default mysqlTest
 
 export const pageQuery = graphql`
-  query blogListMysqlQueryT {
+  query blogListMysqlQuery($skip: Int!, $limit: Int!) {
         site {
             siteMetadata {
                 title
@@ -64,8 +65,9 @@ export const pageQuery = graphql`
         allMysqlWpPosts(
             filter: {post_type: {eq: "post"}, post_status: {eq: "publish"}},
             sort: {fields: post_date, order: DESC},
-            skip: 0,
-            limit: 10) {
+            limit: $limit
+            skip: $skip
+            ) {
             edges {
             node {
                 ID
