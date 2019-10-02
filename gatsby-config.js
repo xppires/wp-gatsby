@@ -109,10 +109,9 @@ module.exports = {
         },
         queries: [
           {
-            statement: 'SELECT meta_id, post_id as ID, meta_key, meta_value  FROM wp_postmeta ', //where meta_key=\'_wp_attachment_metadata\'',
+            statement: 'SELECT meta_id, post_id as ID, meta_key, meta_value  FROM wp_postmeta ',
             idFieldName: 'meta_id',
             name: 'WpMeta',
-            // remoteImageFieldNames: 'meta_value'
             parentName: 'WpPosts',
             foreignKey: 'ID',
             cardinality: 'OneToMany',
@@ -129,6 +128,15 @@ module.exports = {
             statement: 'SELECT ID, REPLACE( substr( substr(post_content, locate(\'src="\', post_content) + 5), 1,locate( \'.jpg\', substr(post_content, locate(\'src="\', post_content) + 5)) + 3 ) ,\'ç\',\'c\') as \'src\'  FROM wp_posts where  locate(\'jpg"\', post_content) > 0',
             idFieldName: 'ID',
             name: 'WpImages',
+            parentName: 'WpPosts',
+            foreignKey: 'ID',
+            cardinality: 'OneToMany',
+            remoteImageFieldNames: ['src']
+          },
+          {
+            statement: 'SELECT ID, CONCAT( \'http://i.ytimg.com/vi/\',substr( substr(post_content, locate(\'youtube.com/watch\?v\=\', post_content) + 20), 1,11 ) ,\'/hqdefault.jpg\') as \'src\'  FROM wp_posts where  locate(\'youtube.com\', post_content) > 0 and post_status = \'publish\'',
+            idFieldName: 'ID',
+            name: 'WpYTImages',
             parentName: 'WpPosts',
             foreignKey: 'ID',
             cardinality: 'OneToMany',
@@ -164,15 +172,6 @@ where wp_term_relationships.term_taxonomy_id = wp_term_taxonomy.term_taxonomy_id
             foreignKey: 'term_taxonomy_id',
             cardinality: 'OneToMany',
           },
-          // {
-          //   statement: 'SELECT *,strip_tags(post_content) as post_txt, ID as object_id FROM wp_posts ',
-          //   idFieldName: 'ID',
-          //   name: 'WpTermPost',
-          //   parentName: 'WpTermRelation',
-          //   foreignKey: 'object_id',
-          //   cardinality: 'OneToMany',
-          // },
-
           // post from  taxonomy
           {
             statement: 'select *, object_id as ID from wp_term_relationships where object_id in (select ID from wp_posts )',

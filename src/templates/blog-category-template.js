@@ -21,6 +21,9 @@ class mysqlCategoryPosts extends React.Component {
                         let image = node.WpImages.map(({ mysqlImage }, index) => {
                             if (index === 0) return mysqlImage.childImageSharp;
                         })
+                        let imageYT = node.WpYTImages.map(({ mysqlImage }, index) => {
+                            if (index === 0) return mysqlImage.childImageSharp;
+                        })
                         const props = {
                             title: node.post_title,
                             excerpt: node.post_txt.substring(0, 360) + '...',
@@ -28,16 +31,16 @@ class mysqlCategoryPosts extends React.Component {
                             date: node.post_date,
                             language: node.language || 'pt',
                             tags: node.tags || [],
-                            img: image[0] || defaultImage
+                            img: image[0] || imageYT[0] || defaultImage
                         }
 
                         return <PostsListItem key={props.slug} {...props} />
                     })}
                 </Wrapper>
-                <Pagination
+                {/* <Pagination
                     nbPages={pageContext.nbPages}
                     currentPage={pageContext.currentPage}
-                />
+                /> */}
 
             </Layout>
         )
@@ -89,6 +92,16 @@ export const pageQuery = graphql`
                 comment_author
                 }
                 WpImages {
+                    mysqlImage {
+                        childImageSharp {
+                            fluid(maxWidth: 300) {
+                                ...GatsbyImageSharpFluid
+                            }
+                    }
+                    }
+
+                }
+                WpYTImages {
                     mysqlImage {
                         childImageSharp {
                             fluid(maxWidth: 300) {

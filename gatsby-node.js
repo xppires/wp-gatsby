@@ -139,7 +139,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     )
     .forEach(uniqTag => {
       createPage({
-        path: `tags/${uniqTag}`,
+        path: `term/${uniqTag}`,
         component: PostsBytagTemplate,
         context: {
           tag: uniqTag,
@@ -174,7 +174,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
             name
             slug
             WpTaxonomies {
-              taxonomy
+              type:taxonomy
               term_taxonomy_id
               WpTermRelations {
                 ID: object_id
@@ -229,9 +229,8 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 
   mysqlWpCategories.forEach(({ node: category }, index) => {
     category.WpTaxonomies.map((taxonomy) => {
-      // console.log(taxonomy)
       createPage({
-        path: `/category/${category.slug}`,
+        path: `/${taxonomy.type === 'category' ? 'category' : 'tag'}/${category.slug}`,
         component: ListPostsCategoryTemplate,
         context: {
           slug: category.slug,

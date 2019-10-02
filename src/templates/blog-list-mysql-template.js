@@ -13,13 +13,16 @@ class mysqlTest extends React.Component {
         const posts = this.props.data.allMysqlWpPosts.edges;
         const defaultImage = this.props.data.defaultImage.childImageSharp
         const { pageContext } = this.props
-        console.log(this.props)
+        // console.log(this.props)
         return (
             <Layout>
                 <Hero title={title} subTitle={description} />
                 <Wrapper>
                     {posts.map(({ node }) => {
                         let image = node.WpImages.map(({ mysqlImage }, index) => {
+                            if (index === 0) return mysqlImage.childImageSharp;
+                        })
+                        let imageYT = node.WpYTImages.map(({ mysqlImage }, index) => {
                             if (index === 0) return mysqlImage.childImageSharp;
                         })
                         const props = {
@@ -29,7 +32,7 @@ class mysqlTest extends React.Component {
                             date: node.post_date,
                             language: node.language || 'pt',
                             tags: node.tags || [],
-                            img: image[0] || defaultImage
+                            img: image[0] || imageYT[0] || defaultImage
                         }
 
                         return <PostsListItem key={props.slug} {...props} />
@@ -86,6 +89,16 @@ export const pageQuery = graphql`
                 comment_author
                 }
                 WpImages {
+                    mysqlImage {
+                        childImageSharp {
+                            fluid(maxWidth: 300) {
+                                ...GatsbyImageSharpFluid
+                            }
+                    }
+                    }
+
+                }
+                WpYTImages {
                     mysqlImage {
                         childImageSharp {
                             fluid(maxWidth: 300) {
