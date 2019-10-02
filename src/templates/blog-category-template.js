@@ -47,7 +47,7 @@ class mysqlCategoryPosts extends React.Component {
 export default mysqlCategoryPosts
 
 export const pageQuery = graphql`
-  query categoryPostsListMysqlQuery($skip: Int!, $limit: Int!) {
+  query categoryPostsListMysqlQuery($taxonomyID: Int!, $skip: Int!, $limit: Int!) {
         site {
             siteMetadata {
                 title
@@ -62,7 +62,11 @@ export const pageQuery = graphql`
             }
         }
         allMysqlWpPosts(
-            filter: {post_type: {eq: "post"}, post_status: {eq: "publish"}},
+            filter: {
+                post_type: {eq: "post"},
+                post_status: {eq: "publish"}
+                WpTermPosts: {elemMatch: {term_taxonomy_id: {eq: $taxonomyID}}}
+                },
             sort: {fields: post_date, order: DESC},
             limit: $limit
             skip: $skip

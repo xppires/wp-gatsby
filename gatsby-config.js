@@ -172,14 +172,16 @@ where wp_term_relationships.term_taxonomy_id = wp_term_taxonomy.term_taxonomy_id
           //   foreignKey: 'object_id',
           //   cardinality: 'OneToMany',
           // },
-          // {
-          //   statement: 'select *, object_id as ID from wp_term_relationships',
-          //   idFieldName: 'oid',
-          //   name: 'WpTermPost',
-          //   parentName: 'WpPosts',
-          //   foreignKey: 'ID',
-          //   cardinality: 'OneToMany',
-          // },
+
+          // post from  taxonomy
+          {
+            statement: 'select *, object_id as ID from wp_term_relationships where object_id in (select ID from wp_posts )',
+            idFieldName: 'oid',
+            name: 'WpTermPost',
+            parentName: 'WpPosts',
+            foreignKey: 'ID',
+            cardinality: 'OneToMany',
+          },
 
 
         ]

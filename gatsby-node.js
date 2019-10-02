@@ -175,6 +175,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
             slug
             WpTaxonomies {
               taxonomy
+              term_taxonomy_id
               WpTermRelations {
                 ID: object_id
               }
@@ -225,17 +226,22 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 
   // mysql categories
   const mysqlWpCategories = allMysqlWpQuery.data.allMysqlCategories.edges
-  mysqlWpCategories.forEach(({ node: category }, index) => {
 
-    createPage({
-      path: `/category/${category.slug}`,
-      component: ListPostsCategoryTemplate,
-      context: {
-        slug: category.slug,
-        limit: postsPerPage,
-        skip: 0,
-      },
+  mysqlWpCategories.forEach(({ node: category }, index) => {
+    category.WpTaxonomies.map((taxonomy) => {
+      // console.log(taxonomy)
+      createPage({
+        path: `/category/${category.slug}`,
+        component: ListPostsCategoryTemplate,
+        context: {
+          slug: category.slug,
+          taxonomyID: taxonomy.term_taxonomy_id,
+          limit: postsPerPage,
+          skip: 0,
+        },
+      })
     })
+
   }
   )
 
