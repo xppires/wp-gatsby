@@ -12,6 +12,8 @@ import PrevNextPost from '../components/PrevNextPost'
 import SEO from '../components/SEO'
 import Disqus from '../components/Disqus'
 
+import YouTube from 'react-youtube';
+
 const ArticleWrapper = styled.article`
   padding: 0 30px 30px;
 
@@ -121,12 +123,45 @@ const ContentBody = styled.div`
     margin: 14px;
   }
 `
-
+const Comment = styled.div`
+h3{
+  padding:14px 0;
+}
+.comment{
+  padding-bottom:9px;
+}
+p {
+  text-align:justify;
+}
+.sign {
+  text-align:right;
+  padding:7px 0;
+}
+`
 class BlogPostTemplate extends React.Component {
   render() {
     const post = this.props.data.post
     const { previous, next } = this.props.pageContext
+    const comments = post.WpComments
 
+    const re = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/g
+    const ytLinks = post.body.match(re)
+    if (ytLinks) {
+
+      ytLinks.forEach(element => {
+        post.body = post.body.replace(element, '')
+      });
+      post.body = post.body.replace(/&amp;feature=player_embedded#!/g, '')
+      post.body = post.body.replace(/&amp;feature=related/g, '')
+    }
+
+    const opts = {
+      height: '390',
+      width: '640',
+      playerVars: { // https://developers.google.com/youtube/player_parameters
+        autoplay: 0
+      }
+    }
     return (
       <Layout location={this.props.location}>
         <SEO
@@ -155,6 +190,17 @@ class BlogPostTemplate extends React.Component {
               {(post.tags || post.date) && <ContentHeader date={post.date} tags={post.tags} />}
               <ContentBody>
                 <div dangerouslySetInnerHTML={{ __html: post.body }} />
+                {
+                  ytLinks && ytLinks.map((link, index) => {
+                    return <YouTube
+                      key={index}
+                      videoId={link.replace('http://www.youtube.com/watch?v=', '')}
+                      opts={opts}
+                      onReady={this._onReady}
+                    />
+                  })
+                }
+
               </ContentBody>
             </section>
             <ArticleFooter>
@@ -165,10 +211,25 @@ class BlogPostTemplate extends React.Component {
 
         <Wrapper>
           <Disqus slug={post.slug} title={post.title} />
-          {/* <PrevNextPost previous={previous} next={next} /> */}
+          {/* <PrevNextPost previous={revious} next={next} /> */}
+          {comments && comments.length > 0 && <Comment>
+            <h3>Comentários</h3>
+            {comments.map((comment, index) => {
+              return <div key={index} className="comment">
+                <p>{comment.comment_txt}</p>
+                <div className="sign">{comment.comment_date_gmt} - {comment.comment_author}</div>
+              </div>
+            })}
+          </Comment>}
+
         </Wrapper>
       </Layout>
     )
+
+    // _onReady(event){
+    //   // access to player in all event handlers via event.target
+    //   event.target.pauseVideo()
+    // }
   }
 }
 
@@ -190,12 +251,16 @@ export const pageQuery = graphql`
           post_content
           WpComments {
             comment_author_url
-            comment_date_gmt
+             comment_date_gmt(formatString: "MM/DD")
             comment_content
+            comment_txt
             comment_approved
             comment_author
           }
           post_excerpt
+          WpYTImages {
+            src
+          }
 
 
     }

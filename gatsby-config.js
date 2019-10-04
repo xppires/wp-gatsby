@@ -117,7 +117,7 @@ module.exports = {
             cardinality: 'OneToMany',
           },
           {
-            statement: 'SELECT * FROM wp_comments ',
+            statement: 'SELECT *,strip_url(strip_tags(comment_content)) as comment_txt FROM wp_comments  where comment_approved = 1 ORDER BY `comment_parent` ASC, `comment_date_gmt` ASC ',
             idFieldName: 'comment_ID',
             name: 'WpComments',
             parentName: 'WpPosts',
@@ -144,7 +144,7 @@ module.exports = {
           },
 
           {
-            statement: 'SELECT *,strip_tags(post_content) as post_txt FROM wp_posts ',
+            statement: 'SELECT *,strip_url(strip_tags(post_content)) as post_txt FROM wp_posts ',
             idFieldName: 'ID',
             name: 'WpPosts'
           },
