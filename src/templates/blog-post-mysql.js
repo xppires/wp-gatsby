@@ -154,6 +154,11 @@ class BlogPostTemplate extends React.Component {
       post.body = post.body.replace(/&amp;feature=player_embedded#!/g, '')
       post.body = post.body.replace(/&amp;feature=related/g, '')
     }
+    const txtwords = post.post_txt.split(' ')
+    let seoDescrition = ''
+    txtwords.map((value) => {
+      if (seoDescrition.length < 240) seoDescrition = seoDescrition.concat(value, ' ')
+    })
 
     const opts = {
       height: '390',
@@ -166,10 +171,10 @@ class BlogPostTemplate extends React.Component {
       <Layout location={this.props.location}>
         <SEO
           title={post.title}
-          description={post.excerpt}
+          description={seoDescrition}
           cover={post.cover && post.cover.publicURL}
           imageFb={
-            post.imageFb && post.imageFb.publicURL
+            post.WpImages && post.WpImages[0].src
           }
           imageTw={
             post.imageTw && post.imageTw.publicURL
@@ -244,6 +249,7 @@ export const pageQuery = graphql`
           title:post_title
           date:post_date
           body:post_content
+          post_txt
           WpMetas {
             meta_key
             meta_value
@@ -258,7 +264,7 @@ export const pageQuery = graphql`
             comment_author
           }
           post_excerpt
-          WpYTImages {
+          WpImages {
             src
           }
 
