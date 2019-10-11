@@ -153,8 +153,8 @@ class BlogPostTemplate extends React.Component {
       });
       post.body = post.body.replace(/&amp;feature=player_embedded#!/g, '')
       post.body = post.body.replace(/&amp;feature=related/g, '')
-      post.body = post.body.replace(/http:\/\/www.opass/g, 'https://www.opass')
     }
+    post.body = post.body.replace(/http:\/\/www.opass/g, 'https://www.opass')
     const txtwords = post.post_txt.split(' ')
     let seoDescrition = ''
     txtwords.map((value) => {

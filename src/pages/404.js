@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import Layout from '../components/layout'
 import Wrapper from '../components/Wrapper'
 import SEO from '../components/SEO'
-import RelatedPosts from '../components/RelatedPosts'
+import PostsListItem from '../components/PostsListItem'
 import { Text } from '../components/Commons'
 
 const MainTitle = styled.h1`
@@ -29,30 +29,71 @@ const SubTitle = styled.h2`
 
 const NotFoundPage = props => {
   const data = useStaticQuery(graphql`
-    query {
-      posts: allMdx(
-        sort: { fields: [frontmatter___date], order: DESC }
-        filter: { fileAbsolutePath: { regex: "//content/posts//" } }
-        limit: 5
-      ) {
-        edges {
-          node {
-            excerpt
-            frontmatter {
-              date(formatString: "DD MMMM, YYYY")
-              title
-              tags
-              language
-              slug
+      query {
+        site {
+            siteMetadata {
+                title
+                description
             }
-          }
         }
-      }
-    }
+        defaultImage:file(name: {eq: "source_flor_400x400"}) {
+            childImageSharp {
+                fluid(maxWidth: 300 ) {
+                    ...GatsbyImageSharpFluid
+                    }
+            }
+        }
+        allMysqlWpPosts(
+            filter: {post_type: {eq: "post"}, post_status: {eq: "publish"}},
+            sort: {fields: post_date, order: DESC},
+            limit: 4
+            skip: 0
+            ) {
+            edges {
+            node {
+                ID
+                post_name
+                post_title
+                WpMetas {
+                meta_key
+                meta_value
+                }
+                post_txt
+                WpComments {
+                comment_author_url
+                comment_date_gmt
+                comment_content
+                comment_approved
+                comment_author
+                }
+                WpImages {
+                    mysqlImage {
+                        childImageSharp {
+                            fluid(maxWidth: 300) {
+                                ...GatsbyImageSharpFluid
+                            }
+                    }
+                    }
+
+                }
+                WpYTImages {
+                    mysqlImage {
+                        childImageSharp {
+                            fluid(maxWidth: 300) {
+                                ...GatsbyImageSharpFluid
+                            }
+                    }
+                    }
+
+                }
+            }
+            }
+        }
+  }
   `)
 
-  const posts = data.posts.edges
-
+  const posts = props.data.allMysqlWpPosts.edges;
+  const defaultImage = props.data.defaultImage.childImageSharp
   return (
     <Layout location={props.location} noCover={true}>
       <SEO title="Page Not Found" />
@@ -60,13 +101,31 @@ const NotFoundPage = props => {
         <MainTitle>404 Page Not Found</MainTitle>
         <Ghost>👻</Ghost>
         <Text>
-          Looks like you've followed a broken link or entered a URL that doesn't
-          exist on this site.
+          Nós tentamos encontrar as páginas correspondentes do nosso website.
         </Text>
 
-        <SubTitle>Recent Posts</SubTitle>
+        <SubTitle>Seguem algumas sugestões</SubTitle>
 
-        <RelatedPosts posts={posts} />
+        {posts.map(({ node }) => {
+          let image = node.WpImages.map(({ mysqlImage }, index) => {
+            if (index === 0) return mysqlImage.childImageSharp;
+          })
+          let imageYT = node.WpYTImages.map(({ mysqlImage }, index) => {
+            if (index === 0) return mysqlImage.childImageSharp;
+          })
+          const props = {
+            title: node.post_title,
+            excerpt: node.post_txt.substring(0, 360) + '...',
+            slug: node.post_name,
+            date: node.post_date,
+            language: node.language || 'pt',
+            tags: node.tags || [],
+            img: image[0] || imageYT[0] || defaultImage
+          }
+
+          return <PostsListItem key={props.slug} {...props} />
+        })}
+
       </Wrapper>
     </Layout>
   )
