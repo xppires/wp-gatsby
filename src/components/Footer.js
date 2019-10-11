@@ -72,11 +72,14 @@ const FooterWrapper = styled.footer`
     .footer-col:first-child {
       width: 100%;
     }
+    .footer-link {
+      padding: 1rem;
+    }
   }
 `
 
 const Footer = () => {
-  const { authorName, websiteHost, footerLinks } = useSiteMetadata()
+  const { authorName, websiteHost, footerLinks, siteTitle } = useSiteMetadata()
 
   const FooterItem = ({ item }) => {
     if (item.url.startsWith('/')) {
@@ -90,7 +93,7 @@ const Footer = () => {
     }
     return (
       <span className="footer-item">
-        <a className="footer-link" href={item.url}>
+        <a className="footer-link" target="_blank" rel="noopener" href={item.url}>
           {item.label}
         </a>
       </span>
@@ -115,9 +118,9 @@ const Footer = () => {
       <nav>
         <div className="footer-col">
           <h5 className="footer-title">
-            {authorName} © {new Date().getFullYear()}
+            {siteTitle} - {authorName} © {new Date().getFullYear()}
           </h5>
-          <p className="footer-item-text">
+          {/* <p className="footer-item-text">
             Built with{' '}
             <a className="footer-link" href="https://www.gatsbyjs.org">
               Gatsby
@@ -140,7 +143,7 @@ const Footer = () => {
               {websiteHost.name}
             </a>
             .
-          </p>
+          </p> */}
         </div>
         {footerLinks.map((column, i) => {
           return <FooterColumn column={column} key={`footer-column-${i}`} />

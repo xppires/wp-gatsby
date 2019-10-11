@@ -29,7 +29,10 @@
     "lint": "eslint --ext .js,.jsx --ignore-pattern public .",
     "semantic-release": "semantic-release",
     "start": "gatsby develop",
-    "test": "echo \"Write tests! -> https://gatsby.app/unit-testing\""
+    "test": "echo \"Write tests! -> https://gatsby.app/unit-testing\"",
+    "s3dev": "cmd /c aws s3 sync public\\  s3://www.opassoapasso.com --acl public-read",
+    "cleancloudfront": "cmd /c aws cloudfront create-invalidation --distribution-id E3LBC2AG3IA7F --paths \"/como-limp*\"",
+    "deploy": "gatsby clean && gatsby build && npm run s3dev && npm run cleancloudfront "
   },
   "dependencies": {
     "@mdx-js/mdx": "^1.0.23",

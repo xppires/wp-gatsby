@@ -72,7 +72,8 @@ const HeaderLinkTitleContent = styled.span`
 
 const HeaderImage = styled.img`
   padding: 4px;
-  height: 57px;
+  height: 55px;
+  width: 55px;
 `
 
 const MobilePanel = styled.div`
@@ -155,9 +156,9 @@ const BurgerContent = styled.div`
     position: absolute;
     left: 0;
     ${props =>
-      props.isToggledOn
-        ? 'transform: rotate(45deg); top: 0;'
-        : 'transform: rotate(0)'};
+    props.isToggledOn
+      ? 'transform: rotate(45deg); top: 0;'
+      : 'transform: rotate(0)'};
     transition: all 250ms cubic-bezier(0.86, 0, 0.07, 1);
   }
   ::after {
@@ -169,9 +170,9 @@ const BurgerContent = styled.div`
     position: absolute;
     left: 0;
     ${props =>
-      props.isToggledOn
-        ? 'transform: rotate(-45deg); top: 0;'
-        : 'transform: rotate(0)'};
+    props.isToggledOn
+      ? 'transform: rotate(-45deg); top: 0;'
+      : 'transform: rotate(0)'};
     transition: all 250ms cubic-bezier(0.86, 0, 0.07, 1);
   }
 `

@@ -153,6 +153,7 @@ class BlogPostTemplate extends React.Component {
       });
       post.body = post.body.replace(/&amp;feature=player_embedded#!/g, '')
       post.body = post.body.replace(/&amp;feature=related/g, '')
+      post.body = post.body.replace(/http:\/\/www.opass/g, 'https://www.opass')
     }
     const txtwords = post.post_txt.split(' ')
     let seoDescrition = ''
@@ -174,7 +175,7 @@ class BlogPostTemplate extends React.Component {
           description={seoDescrition}
           cover={post.cover && post.cover.publicURL}
           imageFb={
-            post.WpImages && post.WpImages[0].src
+            post.WpImages.mysqlImage && post.WpImages.mysqlImage[0].src
           }
           imageTw={
             post.imageTw && post.imageTw.publicURL
