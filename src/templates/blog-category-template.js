@@ -19,7 +19,7 @@ class mysqlCategoryPosts extends React.Component {
             <Layout>
                 <SEO
                     title={'Tudo sobre ' + title + (pageContext.currentPage > 1 ? ' Pág.' + pageContext.currentPage : '')}
-                    description={description}
+                    description={description + ' em ' + title}
                 />
                 <Hero title={titleHero} subTitle={description} />
                 <Wrapper>
