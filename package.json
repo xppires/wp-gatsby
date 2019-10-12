@@ -31,7 +31,7 @@
     "start": "gatsby develop",
     "test": "echo \"Write tests! -> https://gatsby.app/unit-testing\"",
     "s3dev": "cmd /c aws s3 sync public\\  s3://www.opassoapasso.com --acl public-read",
-    "cleancloudfront": "cmd /c aws cloudfront create-invalidation --distribution-id E3LBC2AG3IA7F --paths \"/como-limp*\"",
+    "cleancloudfront": "cmd /c aws cloudfront create-invalidation --distribution-id E3LBC2AG3IA7F --paths \"/*\"",
     "deploy": "gatsby clean && gatsby build && npm run s3dev && npm run cleancloudfront "
   },
   "dependencies": {

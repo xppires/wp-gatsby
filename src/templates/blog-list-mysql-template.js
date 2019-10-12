@@ -4,6 +4,7 @@ import Layout from '../components/layout'
 import PostsListItem from '../components/PostsListItem'
 import Hero from '../components/Hero'
 import Pagination from '../components/Pagination'
+import SEO from '../components/SEO'
 
 import Wrapper from '../components/Wrapper'
 
@@ -16,6 +17,7 @@ class mysqlTest extends React.Component {
         // console.log(this.props)
         return (
             <Layout>
+                <SEO title={title + (pageContext.currentPage > 1 ? ' Pág.' + pageContext.currentPage : '')} />
                 <Hero title={title} subTitle={description} />
                 <Wrapper>
                     {posts.map(({ node }) => {

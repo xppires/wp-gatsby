@@ -14,7 +14,7 @@ class ContentIntro extends React.Component {
 
     return (
       <Header>
-        {date && <time>{date}</time>}
+        {/* {date && <time>{date}</time>} */}
         {Array.isArray(tags) && tags.length > 0 && (
           <Fragment>
             <span> in</span>
