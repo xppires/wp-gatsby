@@ -4,18 +4,24 @@ import Layout from '../components/layout'
 import PostsListItem from '../components/PostsListItem'
 import Hero from '../components/Hero'
 import Pagination from '../components/Pagination'
-
+import SEO from '../components/SEO'
 import Wrapper from '../components/Wrapper'
 
 class mysqlCategoryPosts extends React.Component {
     render() {
-        const { title, description } = this.props.data.site.siteMetadata
+        const { description } = this.props.data.site.siteMetadata
+        const title = this.props.data.categoryTaxonomy.name;
+        const titleHero = title.charAt(0).toUpperCase() + title.slice(1)
         const posts = this.props.data.allMysqlWpPosts.edges;
         const defaultImage = this.props.data.defaultImage.childImageSharp
         const { pageContext } = this.props
         return (
             <Layout>
-                <Hero title={title} subTitle={description} />
+                <SEO
+                    title={'Tudo sobre ' + title + (pageContext.currentPage > 1 ? ' Pág.' + pageContext.currentPage : '')}
+                    description={description}
+                />
+                <Hero title={titleHero} subTitle={description} />
                 <Wrapper>
                     {posts.map(({ node }) => {
                         let image = node.WpImages.map(({ mysqlImage }, index) => {
@@ -63,6 +69,9 @@ export const pageQuery = graphql`
                     ...GatsbyImageSharpFluid
                     }
             }
+        }
+        categoryTaxonomy: mysqlWpTerm(WpTaxonomies: {elemMatch: {term_taxonomy_id: {eq: $taxonomyID}}}) {
+            name
         }
         allMysqlWpPosts(
             filter: {
