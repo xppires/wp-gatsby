@@ -17,7 +17,10 @@ class mysqlTest extends React.Component {
         // console.log(this.props)
         return (
             <Layout>
-                <SEO title={title + (pageContext.currentPage > 1 ? ' Pág.' + pageContext.currentPage : '')} />
+                <SEO
+                    title={title + (pageContext.currentPage > 1 ? ' Pág.' + pageContext.currentPage : '')}
+                    path={pageContext.currentPage > 1 ? '/page/' + pageContext.currentPage : ''}
+                />
                 <Hero title={title} subTitle={description} />
                 <Wrapper>
                     {posts.map(({ node }) => {

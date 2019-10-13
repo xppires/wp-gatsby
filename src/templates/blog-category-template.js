@@ -11,6 +11,8 @@ class mysqlCategoryPosts extends React.Component {
     render() {
         const { description } = this.props.data.site.siteMetadata
         const title = this.props.data.categoryTaxonomy.name;
+        const slug = this.props.data.categoryTaxonomy.slug;
+        const type = this.props.data.categoryTaxonomy.WpTaxonomies[0].taxonomy;
         const titleHero = title.charAt(0).toUpperCase() + title.slice(1)
         const posts = this.props.data.allMysqlWpPosts.edges;
         const defaultImage = this.props.data.defaultImage.childImageSharp
@@ -20,6 +22,7 @@ class mysqlCategoryPosts extends React.Component {
                 <SEO
                     title={'Tudo sobre ' + title + (pageContext.currentPage > 1 ? ' Pág.' + pageContext.currentPage : '')}
                     description={description + ' em ' + title}
+                    path={`${type === 'category' ? 'category' : 'tag'}/${slug}`}
                 />
                 <Hero title={titleHero} subTitle={description} />
                 <Wrapper>
@@ -72,6 +75,10 @@ export const pageQuery = graphql`
         }
         categoryTaxonomy: mysqlWpTerm(WpTaxonomies: {elemMatch: {term_taxonomy_id: {eq: $taxonomyID}}}) {
             name
+            slug
+            WpTaxonomies {
+                taxonomy
+                }
         }
         allMysqlWpPosts(
             filter: {
