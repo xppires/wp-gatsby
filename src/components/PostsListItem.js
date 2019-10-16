@@ -6,6 +6,7 @@ import useSiteMetadata from '../hooks/use-site-config'
 import styled from 'styled-components'
 import { colors } from '../tokens'
 import Image from 'gatsby-image'
+import { deviceMax } from '../components/constants/devices'
 
 const Post = styled.article`
   border-bottom: 1px solid rgba(214, 209, 230, 0.5);
@@ -18,6 +19,12 @@ const Post = styled.article`
     max-height: 235px;
     overflow: hidden;
   }
+  @media ${deviceMax.mobileL} {
+    .postImage {
+    width:100%;
+    margin:14px 0 ;
+  }
+
 `
 
 const ReadPost = styled(Link)`
