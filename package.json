@@ -22,7 +22,7 @@
   "main": "n/a",
   "scripts": {
     "build": "set NODE_ENV=production && gatsby build",
-    "develop": "gatsby develop",
+    "develop": "set NODE_ENV=develop && gatsby develop",
     "format": "prettier --write 'src/**/*.js' 'data/siteConfig.js' 'gatsby-*.js'",
     "generatePostPreviewImages": "node ./scripts/generatePostPreviewImages.js",
     "lh": "lighthousebot",
@@ -32,7 +32,7 @@
     "test": "echo \"Write tests! -> https://gatsby.app/unit-testing\"",
     "s3dev": "cmd /c aws s3 sync public\\  s3://www.opassoapasso.com --acl public-read",
     "cleancloudfront": "cmd /c aws cloudfront create-invalidation --distribution-id E3LBC2AG3IA7F --paths \"/*\"",
-    "deploy": "gatsby clean && gatsby build && npm run s3dev && npm run cleancloudfront "
+    "deploy": "set NODE_ENV=production && gatsby clean && gatsby build && npm run s3dev && npm run cleancloudfront "
   },
   "dependencies": {
     "@mdx-js/mdx": "^1.0.23",

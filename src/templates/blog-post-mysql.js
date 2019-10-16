@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { graphql } from 'gatsby'
 import styled from 'styled-components';
 import Layout from '../components/layout'
@@ -122,6 +122,9 @@ const ContentBody = styled.div`
     display:block;
     margin: 14px;
   }
+  .videoembe {
+    margin: 14px 0 0;
+  }
 `
 const Comment = styled.div`
 h3{
@@ -138,105 +141,129 @@ p {
   padding:7px 0;
 }
 `
-class BlogPostTemplate extends React.Component {
-  render() {
-    const post = this.props.data.post
-    const { previous, next } = this.props.pageContext
-    const comments = post.WpComments
 
-    const re = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/g
-    const ytLinks = post.body.match(re)
-    if (ytLinks) {
+// class BlogPostTemplate extends React.Component {
+const BlogPostTemplate = (props) => {
+  // render() {
+  const post = props.data.post
+  const { previous, next } = props.pageContext
+  const comments = post.WpComments
+  let postTxt = post.body
+  let playeropt = { width: '640 ', height: '390' }
 
-      ytLinks.forEach(element => {
-        post.body = post.body.replace(element, '')
-      });
-      post.body = post.body.replace(/&amp;feature=player_embedded#!/g, '')
-      post.body = post.body.replace(/&amp;feature=related/g, '')
-    }
-    post.body = post.body.replace(/http:\/\/www.opass/g, 'https://www.opass')
-    const txtwords = post.post_txt.split(' ')
-    let seoDescrition = ''
-    txtwords.map((value) => {
-      if (seoDescrition.length < 240) seoDescrition = seoDescrition.concat(value, ' ')
-    })
+  const [width, setWidth] = useState(0)
+  const mainRef = useRef(null)
 
-    const opts = {
-      height: '390',
-      width: '640',
-      playerVars: { // https://developers.google.com/youtube/player_parameters
-        autoplay: 0
-      }
-    }
-    return (
-      <Layout location={this.props.location}>
-        <SEO
-          title={post.title}
-          description={seoDescrition}
-          cover={post.cover && post.cover.publicURL}
-          imageFb={
-            post.WpImages.mysqlImage && post.WpImages.mysqlImage[0].src
-          }
-          imageTw={
-            post.imageTw && post.imageTw.publicURL
-          }
-          lang={post.language || 'pt'}
-          path={post.slug}
-          isBlogPost
-        />
+  useEffect(() => {
+    setWidth(mainRef.current.clientWidth)
+  })
 
-        <Hero
-          heroImg={post.cover && post.cover.publicURL}
-          title={post.title}
-        />
+  const re = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/g
+  const ytLinks = post.body.match(re)
+  if (ytLinks) {
 
-        <Wrapper>
-          <ArticleWrapper>
-            <section>
-              {(post.tags || post.date) && <ContentHeader date={post.date} tags={post.tags} />}
-              <ContentBody>
-                <div dangerouslySetInnerHTML={{ __html: post.body }} />
-                {
-                  ytLinks && ytLinks.map((link, index) => {
-                    return <YouTube
-                      key={index}
-                      videoId={link.replace('http://www.youtube.com/watch?v=', '')}
-                      opts={opts}
-                      onReady={this._onReady}
-                    />
-                  })
-                }
-
-              </ContentBody>
-            </section>
-            <ArticleFooter>
-              <Bio />
-            </ArticleFooter>
-          </ArticleWrapper>
-        </Wrapper>
-
-        <Wrapper>
-          <Disqus slug={post.slug} title={post.title} />
-          {/* <PrevNextPost previous={revious} next={next} /> */}
-          {comments && comments.length > 0 && <Comment>
-            <h3>Comentários</h3>
-            {comments.map((comment, index) => {
-              return <div key={index} className="comment">
-                <p>{comment.comment_txt}</p>
-                <div className="sign">{comment.comment_date_gmt} - {comment.comment_author}</div>
-              </div>
-            })}
-          </Comment>}
-
-        </Wrapper>
-      </Layout>
-    )
-
-    // _onReady(event){
-    //   // access to player in all event handlers via event.target
-    //   event.target.pauseVideo()
-    // }
+    ytLinks.forEach(element => {
+      postTxt = postTxt.replace(element, '')
+    });
+    postTxt = postTxt.replace(/&amp;feature=player_embedded#!/g, '')
+    postTxt = postTxt.replace(/&amp;feature=related/g, '')
   }
+  postTxt = postTxt.replace(/http:\/\/www.opass/g, 'https://www.opass')
+  postTxt = postTxt.replace(/http:\/\/passoapasso.amaneira/g, 'https://www.passoapasso')
+  const txtwords = post.post_txt.split(' ')
+  let seoDescrition = ''
+  txtwords.map((value) => {
+    if (seoDescrition.length < 240) seoDescrition = seoDescrition.concat(value, ' ')
+  })
+  if (width < 650) {
+    if (width < 425)
+      playeropt = { width: '270 ', height: '202' }
+    else playeropt = { width: '560 ', height: '315' }
+  }
+
+  const opts = {
+    height: playeropt.height,
+    width: playeropt.width,
+    playerVars: { // https://developers.google.com/youtube/player_parameters
+      autoplay: 0
+    }
+  }
+  const _onReady = (event) => {
+    // access to player in all event handlers via event.target
+    // console.log(height)
+    event.target.pauseVideo()
+  }
+
+  return (
+    <Layout location={props.location}>
+      <SEO
+        title={post.title}
+        description={seoDescrition}
+        cover={post.cover && post.cover.publicURL}
+        imageFb={
+          post.WpImages.mysqlImage && post.WpImages.mysqlImage[0].src
+        }
+        imageTw={
+          post.imageTw && post.imageTw.publicURL
+        }
+        lang={post.language || 'pt'}
+        path={post.slug}
+        isBlogPost
+      />
+
+      <Hero
+        heroImg={post.cover && post.cover.publicURL}
+        title={post.title}
+      />
+
+      <Wrapper>
+        <ArticleWrapper>
+          <section>
+            {(post.tags || post.date) && <ContentHeader date={post.date} tags={post.tags} />}
+            <ContentBody>
+              <div ref={mainRef} dangerouslySetInnerHTML={{ __html: postTxt }} />
+
+              {ytLinks && ytLinks.map((link, index) => {
+                return <YouTube className='videoembe'
+                  key={index}
+                  videoId={link.replace('http://www.youtube.com/watch?v=', '')}
+                  opts={opts}
+                  onReady={_onReady}
+                />
+              })
+              }
+
+            </ContentBody>
+          </section>
+          <ArticleFooter>
+            <Bio />
+          </ArticleFooter>
+        </ArticleWrapper>
+      </Wrapper>
+
+      <Wrapper>
+        <Disqus slug={post.slug} title={post.title} />
+        {/* <PrevNextPost previous={revious} next={next} /> */}
+        {comments && comments.length > 0 && <Comment>
+          <h3>Comentários</h3>
+          {comments.map((comment, index) => {
+            return <div key={index} className="comment">
+              <p>{comment.comment_txt}</p>
+              <div className="sign">{comment.comment_date_gmt} - {comment.comment_author}</div>
+            </div>
+          })}
+        </Comment>}
+
+      </Wrapper>
+    </Layout>
+  )
+
+  // }
+  //  const _onReady(event) {
+  //     // access to player in all event handlers via event.target
+  //     console.log(this.mainRef)
+  //     event.target.pauseVideo()
+  //   }
 }
 
 export default BlogPostTemplate
