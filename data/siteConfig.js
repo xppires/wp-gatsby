@@ -1,3 +1,6 @@
+require("dotenv").config({
+  path: `.env.${process.env.NODE_ENV}`,
+})
 module.exports = {
   siteTitle: 'O Passo a Passo',
   siteDescription: 'Dicas Como fazer artesanato',
@@ -13,7 +16,8 @@ module.exports = {
   // Prefixes all links. For cases when deployed to maxpou.fr/gatsby-starter-morning-dew/
   pathPrefix: '/', // Note: it must *not* have a trailing slash.
   siteCover: 'cover.jpg', // file in content/images
-  googleAnalyticsId: 'UA-96855-15',
+  googleAnalyticsId: `${process.env.googleAnalyticsId}`,
+  googleAdsenseID: `${process.env.googleAdsenseID}`,
   background_color: '#ffffff',
   theme_color: '#222222',
   display: 'standalone',
