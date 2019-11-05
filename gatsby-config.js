@@ -105,11 +105,11 @@ module.exports = {
           host: 'localhost',
           user: 'root',
           password: '',
-          database: 'wp3_passoapasso'
+          database: `${config.wpDBName}`
         },
         queries: [
           {
-            statement: 'SELECT meta_id, post_id as ID, meta_key, meta_value  FROM wp_postmeta ',
+            statement: `SELECT meta_id, post_id as ID, meta_key, meta_value  FROM ${config.wpDBPrefix}_postmeta `,
             idFieldName: 'meta_id',
             name: 'WpMeta',
             parentName: 'WpPosts',
@@ -117,7 +117,7 @@ module.exports = {
             cardinality: 'OneToMany',
           },
           {
-            statement: 'SELECT *,strip_url(strip_tags(comment_content)) as comment_txt FROM wp_comments  where comment_approved = 1 ORDER BY `comment_parent` ASC, `comment_date_gmt` ASC ',
+            statement: `SELECT *,strip_url(strip_tags(comment_content)) as comment_txt FROM ${config.wpDBPrefix}_comments  where comment_approved = 1 ORDER BY comment_parent ASC, comment_date_gmt ASC `,
             idFieldName: 'comment_ID',
             name: 'WpComments',
             parentName: 'WpPosts',
@@ -125,7 +125,7 @@ module.exports = {
             cardinality: 'OneToMany',
           },
           {
-            statement: 'SELECT ID, REPLACE( substr( substr(post_content, locate(\'src="\', post_content) + 5), 1,locate( \'.jpg\', substr(post_content, locate(\'src="\', post_content) + 5)) + 3 ) ,\'ç\',\'c\') as \'src\'  FROM wp_posts where  locate(\'jpg"\', post_content) > 0',
+            statement: `SELECT ID, CONCAT('http://amaneira.com.s3-website-us-east-1.amazonaws.com',REPLACE(CONCAT('/piadafacil',REPLACE( substr( substr(post_content, locate(\'src="\', post_content) + 5), 1,locate( \'.jpg\', substr(post_content, locate(\'src="\', post_content) + 5)) + 3 ) ,\'ç\',\'c\')),'http://www.tatiudo.com','')) as \'src\'  FROM ${config.wpDBPrefix}_posts where  post_status = 'publish' and locate(\'jpg"\', post_content) > 0`,
             idFieldName: 'ID',
             name: 'WpImages',
             parentName: 'WpPosts',
@@ -134,7 +134,7 @@ module.exports = {
             remoteImageFieldNames: ['src']
           },
           {
-            statement: 'SELECT ID, CONCAT( \'http://i.ytimg.com/vi/\',substr( substr(post_content, locate(\'youtube.com/watch\?v\=\', post_content) + 20), 1,11 ) ,\'/hqdefault.jpg\') as \'src\'  FROM wp_posts where  locate(\'youtube.com\', post_content) > 0 and post_status = \'publish\'',
+            statement: `SELECT ID, CONCAT( \'http://i.ytimg.com/vi/\',substr( substr(post_content, locate(\'youtube.com/watch\?v\=\', post_content) + 20), 1,11 ) ,\'/hqdefault.jpg\') as \'src\'  FROM ${config.wpDBPrefix}_posts where  locate(\'youtube.com\', post_content) > 0 and post_status = \'publish\'`,
             idFieldName: 'ID',
             name: 'WpYTImages',
             parentName: 'WpPosts',
@@ -144,20 +144,20 @@ module.exports = {
           },
 
           {
-            statement: 'SELECT *,strip_url(strip_tags(post_content)) as post_txt FROM wp_posts ',
+            statement: `SELECT *,strip_url(strip_tags(post_content)) as post_txt FROM ${config.wpDBPrefix}_posts `,
             idFieldName: 'ID',
             name: 'WpPosts'
           },
           // categories and tags
           {
-            statement: 'select * from wp_terms',
+            statement: `select * from ${config.wpDBPrefix}_terms`,
             idFieldName: 'term_id',
             name: 'WpTerm'
           },
           {
-            statement: 'select distinct wp_term_taxonomy.term_id, wp_term_taxonomy.term_taxonomy_id,wp_term_taxonomy.taxonomy \
-from  wp_term_taxonomy, wp_term_relationships \
-where wp_term_relationships.term_taxonomy_id = wp_term_taxonomy.term_taxonomy_id',
+            statement: `select distinct ${config.wpDBPrefix}_term_taxonomy.term_id, ${config.wpDBPrefix}_term_taxonomy.term_taxonomy_id,${config.wpDBPrefix}_term_taxonomy.taxonomy
+            from  ${ config.wpDBPrefix}_term_taxonomy, ${config.wpDBPrefix}_term_relationships
+          where ${ config.wpDBPrefix}_term_relationships.term_taxonomy_id = ${config.wpDBPrefix}_term_taxonomy.term_taxonomy_id`,
             idFieldName: 'term_taxonomy_id',
             name: 'WpTaxonomy',
             parentName: 'WpTerm',
@@ -165,7 +165,7 @@ where wp_term_relationships.term_taxonomy_id = wp_term_taxonomy.term_taxonomy_id
             cardinality: 'OneToMany',
           },
           {
-            statement: 'select * from wp_term_relationships',
+            statement: `select * from ${config.wpDBPrefix}_term_relationships`,
             idFieldName: 'object_id',
             name: 'WpTermRelation',
             parentName: 'WpTaxonomy',
@@ -174,7 +174,7 @@ where wp_term_relationships.term_taxonomy_id = wp_term_taxonomy.term_taxonomy_id
           },
           // post from  taxonomy
           {
-            statement: 'select *, object_id as ID from wp_term_relationships where object_id in (select ID from wp_posts )',
+            statement: `select *, object_id as ID from ${config.wpDBPrefix}_term_relationships where object_id in (select ID from ${config.wpDBPrefix}_posts )`,
             idFieldName: 'oid',
             name: 'WpTermPost',
             parentName: 'WpPosts',

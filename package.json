@@ -21,8 +21,8 @@
   "author": "Maxence Poutord <maxence.poutord@gmail.com>",
   "main": "n/a",
   "scripts": {
-    "build": "set NODE_ENV=production && gatsby build",
-    "develop": "set NODE_ENV=develop && gatsby develop",
+    "build": "gatsby build",
+    "develop": "gatsby develop",
     "format": "prettier --write 'src/**/*.js' 'data/siteConfig.js' 'gatsby-*.js'",
     "generatePostPreviewImages": "node ./scripts/generatePostPreviewImages.js",
     "lh": "lighthousebot",
@@ -30,9 +30,9 @@
     "semantic-release": "semantic-release",
     "start": "gatsby develop",
     "test": "echo \"Write tests! -> https://gatsby.app/unit-testing\"",
-    "s3dev": "cmd /c aws s3 sync public\\  s3://www.opassoapasso.com --acl public-read",
-    "cleancloudfront": "cmd /c aws cloudfront create-invalidation --distribution-id E3LBC2AG3IA7F --paths \"/*\"",
-    "deploy": "set NODE_ENV=production && gatsby clean && gatsby build && npm run s3dev && npm run cleancloudfront "
+    "s3dev": "cmd /c aws s3 sync public\\  s3://www.amaneira.com/piadafacil --acl public-read",
+    "cleancloudfront": "cmd /c aws cloudfront create-invalidation --distribution-id E3LBC2AG3IA7Fc --paths \"/*\"",
+    "deploy": "gatsby clean && gatsby build && npm run s3dev && npm run cleancloudfront "
   },
   "dependencies": {
     "@mdx-js/mdx": "^1.0.23",
@@ -64,6 +64,7 @@
     "prismjs": "^1.16.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-facebook": "^8.0.4",
     "react-helmet": "^5.2.1",
     "react-youtube": "^7.9.0",
     "styled-components": "^4.3.2"

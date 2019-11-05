@@ -164,6 +164,14 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
             post_content
             post_excerpt
           }
+          previous {
+              post_name
+              post_title
+            }
+          next {
+              post_name
+              post_title
+            }
         }
       },
     allMysqlCategories:allMysqlWpTerm(
@@ -208,17 +216,19 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 
 
 
-  mysqlWpPosts.forEach(({ node: post }, index, mysqlWpPosts) => {
-    const previous = index === mysqlWpPosts.length - 1 ? null : mysqlWpPosts[index + 1].node
-    const next = index === 0 ? null : mysqlWpPosts[index - 1].node
+  mysqlWpPosts.forEach(({ node: post, previous, next }, index, mysqlWpPosts) => {
+    const previousNumber = index === mysqlWpPosts.length - 1 ? null : mysqlWpPosts[index + 1].node
+    const nextNumber = index === 0 ? null : mysqlWpPosts[index - 1].node
 
     createPage({
       path: `/${post.post_name}`,
       component: BlogPostMysqlTemplate,
       context: {
         slug: post.post_name,
-        previous,
-        next,
+        previous: previousNumber,
+        next: nextNumber,
+        postNext: next ? next.post_name : '0',
+        postPrevious: previous ? previous.post_name : '0'
       },
     })
   }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { graphql } from 'gatsby'
 import styled from 'styled-components';
+import Image from 'gatsby-image'
 import Layout from '../components/layout'
 import Wrapper from '../components/Wrapper'
 import Hero from '../components/Hero'
@@ -11,8 +12,13 @@ import Content from '../components/Content'
 import PrevNextPost from '../components/PrevNextPost'
 import SEO from '../components/SEO'
 import Disqus from '../components/Disqus'
+import FacebookComments from '../components/CommentsFacebook'
 
 import YouTube from 'react-youtube';
+import PostsListItem from '../components/PostsListItem'
+
+import useSiteMetadata from '../hooks/use-site-config'
+import useSiteImages from '../hooks/use-site-images'
 
 const ArticleWrapper = styled.article`
   padding: 0 30px 30px;
@@ -142,17 +148,55 @@ p {
 }
 `
 
+const NavPosts = styled.div`
+    position: relative;
+    margin: 6rem 0 0;
+    padding: 3rem 0 0;
+    border-top: 1px solid #ececec;
+    .title {
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      display: block;
+      position: absolute;
+      top: -39px;
+      left: 50%;
+      margin-left: -46px;
+      width: 130px;
+      height: 75px;
+      border-radius: 100%;
+      overflow: hidden;
+      padding: 26px 14px;
+      z-index: 2;
+      text-align: center;
+      box-shadow: #ececec 0 0 0 1px;
+      background-color: #ffffff;
+      }
+    .postImage {
+      max-height: 115px;
+    }
+`
+
+
 // class BlogPostTemplate extends React.Component {
 const BlogPostTemplate = (props) => {
   // render() {
   const post = props.data.post
+  const { postPrevious, postNext } = props.data
   const { previous, next } = props.pageContext
   const comments = post.WpComments
+  const images = post.WpImages
   let postTxt = post.body
   let playeropt = { width: '640 ', height: '390' }
 
   const [width, setWidth] = useState(0)
   const mainRef = useRef(null)
+  const {
+    imageDefault,
+  } = useSiteMetadata()
+  const siteDefaultImage = imageDefault
+    ? useSiteImages(imageDefault)
+    : null
 
   useEffect(() => {
     setWidth(mainRef.current.clientWidth)
@@ -200,12 +244,12 @@ const BlogPostTemplate = (props) => {
         title={post.title}
         description={seoDescrition}
         cover={post.cover && post.cover.publicURL}
-        imageFb={
-          post.WpImages.mysqlImage && post.WpImages.mysqlImage[0].src
-        }
-        imageTw={
-          post.imageTw && post.imageTw.publicURL
-        }
+        // imageFb={
+        //   post.WpImages.mysqlImage && post.WpImages.mysqlImage[0].src
+        // }
+        // imageTw={
+        //   post.imageTw && post.imageTw.publicURL
+        // }
         lang={post.language || 'pt'}
         path={post.slug}
         isBlogPost
@@ -222,6 +266,13 @@ const BlogPostTemplate = (props) => {
             {(post.tags || post.date) && <ContentHeader date={post.date} tags={post.tags} />}
             <ContentBody>
               <div ref={mainRef} dangerouslySetInnerHTML={{ __html: postTxt }} />
+              {images && images.map((image, index) => {
+                return <Image
+                  key={index}
+                  fluid={image.mysqlImage.childImageSharp.fluid}
+                />
+              })
+              }
 
               {ytLinks && ytLinks.map((link, index) => {
                 return <YouTube className='videoembe'
@@ -242,7 +293,8 @@ const BlogPostTemplate = (props) => {
       </Wrapper>
 
       <Wrapper>
-        <Disqus slug={post.slug} title={post.title} />
+        <FacebookComments slug={post.slug} />
+        {/* <Disqus slug={post.slug} title={post.title} /> */}
         {/* <PrevNextPost previous={revious} next={next} /> */}
         {comments && comments.length > 0 && <Comment>
           <h3>Comentários</h3>
@@ -253,6 +305,27 @@ const BlogPostTemplate = (props) => {
             </div>
           })}
         </Comment>}
+
+        <NavPosts>
+          <div className="title">Continuamos?</div>
+          {[postPrevious, postNext].map((node) => {
+            if (!node) return;
+            let image = node.WpImages.map(({ mysqlImage }, index) => {
+              if (index === 0) return mysqlImage.childImageSharp;
+            })
+            const props = {
+              title: node.title,
+              excerpt: node.post_txt.substring(0, 60) + '...',
+              slug: node.slug,
+              date: node.post_date,
+              language: node.language || 'pt',
+              tags: node.tags || [],
+              img: image[0] || siteDefaultImage
+            }
+
+            return <PostsListItem key={props.slug} {...props} />
+          })}
+        </NavPosts>
 
       </Wrapper>
     </Layout>
@@ -269,7 +342,7 @@ const BlogPostTemplate = (props) => {
 export default BlogPostTemplate
 
 export const pageQuery = graphql`
-  query BlogPostBySlugMysql($slug: String!) {
+  query BlogPostBySlugMysql($slug: String!, $postPrevious: String!,  $postNext: String!) {
   post: mysqlWpPosts(post_name: {eq: $slug}) {
 
           ID
@@ -293,8 +366,54 @@ export const pageQuery = graphql`
           }
           post_excerpt
           WpImages {
-            src
+            mysqlImage {
+              childImageSharp {
+                fluid(maxWidth: 300) {
+                    ...GatsbyImageSharpFluid
+                }
+              }
+            }
           }
+
+
+    }
+    postNext: mysqlWpPosts(post_name: {eq: $postNext}) {
+        ID
+          slug:post_name
+      title:post_title
+      date:post_date
+      body:post_content
+      post_txt
+      post_excerpt
+          WpImages {
+        mysqlImage {
+        childImageSharp {
+        fluid(maxWidth: 300) {
+        ...GatsbyImageSharpFluid
+      }
+      }
+      }
+    }
+
+
+}
+  postPrevious: mysqlWpPosts(post_name: {eq: $postPrevious}) {
+        ID
+          slug:post_name
+      title:post_title
+      date:post_date
+      body:post_content
+      post_txt
+      post_excerpt
+          WpImages {
+        mysqlImage {
+        childImageSharp {
+        fluid(maxWidth: 300) {
+        ...GatsbyImageSharpFluid
+      }
+      }
+      }
+    }
 
 
     }
