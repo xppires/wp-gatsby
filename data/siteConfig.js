@@ -27,6 +27,7 @@ module.exports = {
   facebookAppId: `${process.env.FacebookAppId}`,
   headerTitle: 'O Passo a Passo',
   headerLinksIcon: 'source_flor_400x400.jpg', //  (leave empty to disable: '')baymax.png
+  imageDefault: 'source_flor_400x400.jpg',
   headerLinks: [
     // {
     //   label: 'Blog',

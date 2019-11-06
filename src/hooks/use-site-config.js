@@ -19,6 +19,7 @@ const useSiteMetadata = () => {
           multilangPosts
           headerTitle
           headerLinksIcon
+          imageDefault
           headerLinks {
             label
             url
