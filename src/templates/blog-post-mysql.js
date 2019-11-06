@@ -11,6 +11,7 @@ import Content from '../components/Content'
 import PrevNextPost from '../components/PrevNextPost'
 import SEO from '../components/SEO'
 import Disqus from '../components/Disqus'
+import FacebookComments from '../components/CommentsFacebook'
 
 import YouTube from 'react-youtube';
 
@@ -242,7 +243,8 @@ const BlogPostTemplate = (props) => {
       </Wrapper>
 
       <Wrapper>
-        <Disqus slug={post.slug} title={post.title} />
+        <FacebookComments slug={post.slug} />
+        {/* <Disqus slug={post.slug} title={post.title} /> */}
         {/* <PrevNextPost previous={revious} next={next} /> */}
         {comments && comments.length > 0 && <Comment>
           <h3>Comentários</h3>

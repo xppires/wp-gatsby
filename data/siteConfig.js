@@ -24,6 +24,7 @@ module.exports = {
   icon: 'content/images/baymax.png',
   postsPerPage: 6,
   disqusShortname: 'https-www-opassoapasso-com',
+  facebookAppId: `${process.env.FacebookAppId}`,
   headerTitle: 'O Passo a Passo',
   headerLinksIcon: 'source_flor_400x400.jpg', //  (leave empty to disable: '')baymax.png
   headerLinks: [
