@@ -1,7 +1,24 @@
 const { createFilePath } = require('gatsby-source-filesystem')
 
+// Replacing '/' would result in empty string which is invalid
+const replacePath = path => (path === `/` ? path : path.replace(/\/$/, ``))
+// Implement the Gatsby API “onCreatePage”. This is
+// called after every page is created.
+exports.onCreatePage = async ({ page, actions }) => {
+  const { createPage, deletePage } = actions
+
+  const oldPage = Object.assign({}, page)
+  // Remove trailing slash unless page is /
+  page.path = replacePath(page.path)
+  if (page.path !== oldPage.path) {
+    // Replace new page with old page
+    deletePage(oldPage)
+    createPage(page)
+  }
+}
+
 exports.createPages = async ({ graphql, actions, reporter }) => {
-  const { createPage } = actions
+  const { createPage, createRedirect } = actions
 
   const BlogPostTemplate = require.resolve('./src/templates/blog-post.js')
   const BlogPostMysqlTemplate = require.resolve('./src/templates/blog-post-mysql.js')
@@ -176,7 +193,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         }
       },
     allMysqlCategories:allMysqlWpTerm(
-      filter: {WpTaxonomies: {elemMatch: {taxonomy: {eq: "category"}}}}
+      filter: {WpTaxonomies: {elemMatch: {taxonomy: {regex: "/(category|post_tag)/i"}}}}
       ) {
         edges {
           node {
@@ -213,6 +230,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         nbPages: nbPagesMyql,
       },
     })
+
   })
 
 
@@ -221,8 +239,10 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     const previousNumber = index === mysqlWpPosts.length - 1 ? null : mysqlWpPosts[index + 1].node
     const nextNumber = index === 0 ? null : mysqlWpPosts[index - 1].node
 
+    // pages without directories
     createPage({
-      path: `/${post.post_name}`,
+      path: `/posts/${post.post_name}.html`,
+      component: BlogPostMysqlTemplate,
       component: BlogPostMysqlTemplate,
       context: {
         slug: post.post_name,
@@ -232,6 +252,29 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         postPrevious: previous ? previous.post_name : '0'
       },
     })
+
+
+
+    createPage({
+      path: `/${post.post_name}`,
+      component: BlogPostMysqlTemplate,
+      component: BlogPostMysqlTemplate,
+      context: {
+        slug: post.post_name,
+        previous: previousNumber,
+        next: nextNumber,
+        postNext: next ? next.post_name : '0',
+        postPrevious: previous ? previous.post_name : '0'
+      },
+    })
+
+    // createRedirect({
+    //   fromPath: `/${post.post_name}/`,
+    //   isPermanent: true,
+    //   redirectInBrowser: true,
+    //   toPath: `/${post.post_name}`,
+    // })
+
   }
   )
 
@@ -241,7 +284,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   mysqlWpCategories.forEach(({ node: category }, index) => {
     category.WpTaxonomies.map((taxonomy) => {
       createPage({
-        path: `/${taxonomy.type === 'category' ? 'category' : 'tag'}/${category.slug}`,
+        path: `/${taxonomy.type === 'category' ? 'category' : 'tag'}/${category.slug}.html`,
         component: ListPostsCategoryTemplate,
         context: {
           slug: category.slug,

@@ -21,7 +21,7 @@
   "author": "Maxence Poutord <maxence.poutord@gmail.com>",
   "main": "n/a",
   "scripts": {
-    "build": "gatsby build",
+    "build": "gatsby build && cmd /c sh ./scripts/urlsimples.sh ",
     "develop": "gatsby develop",
     "format": "prettier --write 'src/**/*.js' 'data/siteConfig.js' 'gatsby-*.js'",
     "generatePostPreviewImages": "node ./scripts/generatePostPreviewImages.js",
@@ -30,7 +30,7 @@
     "semantic-release": "semantic-release",
     "start": "gatsby develop",
     "test": "echo \"Write tests! -> https://gatsby.app/unit-testing\"",
-    "s3dev": "cmd /c aws s3 sync public\\  s3://www.opassoapasso.com --acl public-read",
+    "s3dev": "cmd /c aws s3 sync public\\  s3://www.opassoapasso.com --exclude \"*posts/*\" --acl public-read && aws s3  sync public\\posts  s3://www.opassoapasso.com/  --content-type text/html --acl public-read",
     "cleancloudfront": "cmd /c aws cloudfront create-invalidation --distribution-id E3LBC2AG3IA7F --paths \"/*\"",
     "deploy": "gatsby clean && gatsby build && npm run s3dev && npm run cleancloudfront "
   },
@@ -64,6 +64,7 @@
     "prismjs": "^1.16.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-facebook": "^8.1.4",
     "react-helmet": "^5.2.1",
     "react-youtube": "^7.9.0",
     "styled-components": "^4.3.2"
