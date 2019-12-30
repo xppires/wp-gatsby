@@ -63,6 +63,27 @@ module.exports = {
     },
     // Reminder (https://github.com/gatsbyjs/gatsby/issues/15486#issuecomment-509405867)
     {
+      resolve: `gatsby-plugin-webfonts`,
+      options: {
+        fonts: {
+          google: [
+            {
+              family: "Lato",
+              variants: ["400", "700"],
+              //subsets: ['latin']
+              //text: 'Hello'
+              fontDisplay: 'swap',
+              //strategy: 'selfHosted' // 'base64' || 'cdn'
+            },
+          ],
+        },
+        //formats: ['woff2', 'woff'],
+        //useMinify: true,
+        //usePreload: true,
+        //usePreconnect: false,
+      },
+    },
+    {
       resolve: `gatsby-transformer-remark`,
       options: {
         plugins: [`gatsby-remark-images`],
