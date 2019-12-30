@@ -20,6 +20,11 @@ do
   mv "$file" "${file%.html}"
 done
 
+for file in public/page-data/tag/*
+do
+ mv "$file" "${file%.html}"
+done
+
 for file in public/category/*.html
 do
   export page=${file:15}
@@ -29,3 +34,8 @@ do
   sed -i 's/.html\\page/\\page/g' "$file"
   mv "$file" "${file%.html}"
 done
+for file in public/page-data/category/*
+do
+ mv "$file" "${file%.html}"
+done
+
