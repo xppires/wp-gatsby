@@ -84,6 +84,42 @@ module.exports = {
       },
     },
     {
+      resolve: `gatsby-plugin-sitemap`,
+      options: {
+        output: `/post.xml`,
+        exclude: ['/posts/*'],
+        query: `
+        {
+          site {
+            siteMetadata {
+              siteUrl
+            }
+          }
+
+          allSitePage:allMysqlWpPosts(
+            filter: {post_type: {eq: "post"},
+            post_status: {eq: "publish"}},
+            sort: {fields:post_date}
+            limit: 10000
+            ) {
+              edges {
+                node {
+                  path: post_name
+                }
+              }
+            }
+        }`,
+        serialize: ({ site, allSitePage }) =>
+          allSitePage.edges.map(edge => {
+            return {
+              url: site.siteMetadata.siteUrl + '/' + edge.node.path,
+              changefreq: `daily`,
+              priority: 0.7,
+            }
+          })
+      }
+    },
+    {
       resolve: `gatsby-transformer-remark`,
       options: {
         plugins: [`gatsby-remark-images`],
