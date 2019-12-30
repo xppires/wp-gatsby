@@ -22,6 +22,7 @@ done
 
 for file in public/page-data/tag/*
 do
+ sed -i 's/.html"/"/g' "$file"/page-data.json
  mv "$file" "${file%.html}"
 done
 
@@ -36,6 +37,7 @@ do
 done
 for file in public/page-data/category/*
 do
+sed -i 's/.html"/"/g' "$file"/page-data.json
  mv "$file" "${file%.html}"
 done
 
