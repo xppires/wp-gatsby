@@ -268,12 +268,13 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       },
     })
 
-    // createRedirect({
-    //   fromPath: `/${post.post_name}/`,
-    //   isPermanent: true,
-    //   redirectInBrowser: true,
-    //   toPath: `/${post.post_name}`,
-    // })
+    createRedirect({
+      fromPath: `/${post.post_name}/feed`,
+      isPermanent: true,
+      force: true,
+      redirectInBrowser: true,
+      toPath: `/${post.post_name}`,
+    })
 
   }
   )
