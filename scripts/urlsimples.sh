@@ -8,15 +8,20 @@ do
  sed -i 's~data\\posts~data~g' "$file"
  sed -i 's/.html\\page/\\page/g' "$file"
   mv "$file" "${file%.html}"
-    mkdir -p  "public$pagename/feed" &&  cp "public$pagename/index.html"  "public$pagename/feed/index.html"
- mkdir -p  "public/page-data$pagename/feed" &&  cp "public/page-data$pagename/page-data.json"  "public/page-data$pagename/feed/page-data.json"
+
+  mkdir -p  "public$pagename/feed" &&  cp "public$pagename/index.html"  "public$pagename/feed/index.html"
+  mkdir -p  "public/page-data$pagename/feed" &&  cp "public/page-data$pagename/page-data.json"  "public/page-data$pagename/feed/page-data.json"
+
+  mkdir -p  "public$pagename/trackback" &&  cp "public$pagename/index.html"  "public$pagename/trackback/index.html"
+
+
 done
 #aws s3  sync public\posts  s3://www.opassoapasso.com/  --content-type text/html --acl public-read
 
 for file in public/tag/*.html
 do
   export page=${file:6}
- export postpage=${file:5}
+  export postpage=${file:5}
   echo  "$file", "$page", "$postpage"
  sed -i "s~$page~${page%.html}~g" "$file"
   sed -i 's/.html\\page/\\page/g' "$file"
