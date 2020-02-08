@@ -13,8 +13,8 @@ const Post = styled.article`
   padding-bottom: 1.25rem;
   clear: left;
   .postImage {
-    width:200px;
-    float:left;
+    width: 200px;
+    float: left;
     margin:14px;
     max-height: 235px;
     overflow: hidden;
@@ -24,7 +24,7 @@ const Post = styled.article`
     width:100%;
     margin:14px 0 ;
   }
-
+  }
 `
 
 const ReadPost = styled(Link)`
