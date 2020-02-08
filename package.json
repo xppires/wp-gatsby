@@ -30,8 +30,9 @@
     "semantic-release": "semantic-release",
     "start": "gatsby develop",
     "test": "echo \"Write tests! -> https://gatsby.app/unit-testing\"",
-    "s3dev": "cmd /c aws s3 sync public\\  s3://www.opassoapasso.com --exclude \"*posts/*\"  --exclude \"*tag/*\"  --exclude \"*category/*\" --acl public-read && aws s3  sync public\\posts  s3://www.opassoapasso.com/  --content-type text/html --acl public-read && aws s3  sync public\\tag  s3://www.opassoapasso.com/tag/  --content-type text/html --acl public-read&& aws s3  sync public\\category  s3://www.opassoapasso.com/category/  --content-type text/html --acl public-read",
+    "s3dev": "cmd /c aws s3 sync public\\  s3://www.opassoapasso.com --exclude \"*posts/*\"  --exclude \"*tag/*\"  --exclude \"*category/*\" --acl public-read && aws s3  sync public\\posts  s3://www.opassoapasso.com/  --content-type text/html --acl public-read && aws s3  sync public\\tag  s3://www.opassoapasso.com/tag/  --content-type text/html --acl public-read&& aws s3  sync public\\category  s3://www.opassoapasso.com/category/  --content-type text/html --acl public-read&& npm run ss3tags ",
     "cleancloudfront": "cmd /c aws cloudfront create-invalidation --distribution-id E3LBC2AG3IA7F --paths \"/*\"",
+    "ss3tags": "cmd /c sh  ./scripts/s3upload.sh ",
     "deploy": "gatsby clean && npm run build && npm run s3dev && npm run cleancloudfront "
   },
   "dependencies": {
