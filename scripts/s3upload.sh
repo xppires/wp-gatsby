@@ -19,3 +19,6 @@ fi
   "/c/Program Files/Amazon/AWSCLI/bin/aws.cmd" s3  cp "public/tag/$page"  "s3://www.opassoapasso.com/tag/$page/feed/index.html"  --content-type text/html --acl public-read
   "/c/Program Files/Amazon/AWSCLI/bin/aws.cmd" s3  cp "public/page-data/tag/$page/page-data.json"  "s3://www.opassoapasso.com/page-data/tag/$page/feed/page-data.json"  --content-type text/html --acl public-read
 done
+
+echo "Ajustar os TTLs"
+"/c/Program Files/Amazon/AWSCLI/bin/aws.cmd" s3  cp  public s3://www.opassoapasso.com/ --metadata-directive REPLACE --exclude "*" --include "*app*" --include "*static/*" --include "*comm*" --include "*comp*"  --include "*webpac*" --recursive --cache-control max-age=31536000,s-maxage=31536000 --acl public-read
