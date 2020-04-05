@@ -34,6 +34,9 @@ const useSiteImages = imageName => {
                 presentationWidth
                 presentationHeight
               }
+              logo:fluid(maxWidth: 47, quality: 82){
+                src
+              }
             }
           }
         }

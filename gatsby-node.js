@@ -243,7 +243,6 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     createPage({
       path: `/posts/${post.post_name}.html`,
       component: BlogPostMysqlTemplate,
-      component: BlogPostMysqlTemplate,
       context: {
         slug: post.post_name,
         previous: previousNumber,
@@ -257,7 +256,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 
     createPage({
       path: `/${post.post_name}`,
-      component: BlogPostMysqlTemplate,
+      matchPath: `/${post.post_name}/*`,
       component: BlogPostMysqlTemplate,
       context: {
         slug: post.post_name,
@@ -286,6 +285,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     category.WpTaxonomies.map((taxonomy) => {
       createPage({
         path: `/${taxonomy.type === 'category' ? 'category' : 'tag'}/${category.slug}.html`,
+        matchPath: `/${taxonomy.type === 'category' ? 'category' : 'tagz'}/${category.slug}/*`,
         component: ListPostsCategoryTemplate,
         context: {
           slug: category.slug,

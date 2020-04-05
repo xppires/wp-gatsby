@@ -208,7 +208,7 @@ const Header = () => {
     headerLinksIcon,
   } = useSiteMetadata()
   const iconSrc = headerLinksIcon
-    ? useSiteImages(headerLinksIcon).fluid.src
+    ? useSiteImages(headerLinksIcon).logo.src
     : null
 
   return (

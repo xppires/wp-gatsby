@@ -3,7 +3,7 @@ const config = require('./data/siteConfig')
 
 const modoProd = process.env.NODE_ENV && process.env.NODE_ENV === "production"
 
-const headerScripts = modoProd ? [
+const addScripts = modoProd ? [
     <script
         key="1"
         type="text/javascript"
@@ -24,10 +24,8 @@ exports.onRenderBody = ({
     setPreBodyComponents,
     setPostBodyComponents,
 }) => {
-    setHeadComponents(headerScripts)
-    setPreBodyComponents([
-
-    ])
+    setHeadComponents([])
+    setPreBodyComponents(addScripts)
     setPostBodyComponents([
 
     ])

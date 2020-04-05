@@ -7,6 +7,7 @@
 
 #aws cloudfront get-invalidation --id I2R0CU9W65ON35 --distribution-id E3LBC2AG3IA7F
 
+
 export fullpaht=$(pwd)
 echo "$fullpaht"
 for file in public/tag/*
