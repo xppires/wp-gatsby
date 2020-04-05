@@ -19,7 +19,6 @@ import PostsListItem from '../components/PostsListItem'
 
 import useSiteMetadata from '../hooks/use-site-config'
 import useSiteImages from '../hooks/use-site-images'
-import { Router } from "@reach/router"
 
 const ArticleWrapper = styled.article`
   padding: 0 30px 30px;
@@ -176,9 +175,6 @@ const NavPosts = styled.div`
       max-height: 115px;
     }
 `
-const SomeSubPage = props => {
-  return <div>Hi from SubPage with id: {props.id}</div>
-}
 
 // class BlogPostTemplate extends React.Component {
 const BlogPostTemplate = (props) => {
@@ -265,9 +261,6 @@ const BlogPostTemplate = (props) => {
         title={post.title}
       />
 
-      <Router basepath="{`/${post.slug}`}">
-        <SomeSubPage path="/555" />
-      </Router>
 
       <Wrapper>
         <ArticleWrapper>
