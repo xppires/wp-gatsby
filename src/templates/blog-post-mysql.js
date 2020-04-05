@@ -19,6 +19,7 @@ import PostsListItem from '../components/PostsListItem'
 
 import useSiteMetadata from '../hooks/use-site-config'
 import useSiteImages from '../hooks/use-site-images'
+import { Router } from "@reach/router"
 
 const ArticleWrapper = styled.article`
   padding: 0 30px 30px;
@@ -175,6 +176,9 @@ const NavPosts = styled.div`
       max-height: 115px;
     }
 `
+const SomeSubPage = props => {
+  return <div>Hi from SubPage with id: {props.id}</div>
+}
 
 // class BlogPostTemplate extends React.Component {
 const BlogPostTemplate = (props) => {
@@ -189,6 +193,8 @@ const BlogPostTemplate = (props) => {
 
   const [width, setWidth] = useState(0)
   const mainRef = useRef(null)
+
+
 
   const {
     imageDefault,
@@ -258,6 +264,10 @@ const BlogPostTemplate = (props) => {
         heroImg={post.cover && post.cover.publicURL}
         title={post.title}
       />
+
+      <Router basepath="{`/${post.slug}`}">
+        <SomeSubPage path="/555" />
+      </Router>
 
       <Wrapper>
         <ArticleWrapper>
@@ -387,7 +397,7 @@ export const pageQuery = graphql`
           WpImages {
         mysqlImage {
         childImageSharp {
-        fluid(maxWidth: 300) {
+        fluid(maxWidth: 200) {
         ...GatsbyImageSharpFluid
       }
       }
@@ -407,7 +417,7 @@ export const pageQuery = graphql`
           WpImages {
         mysqlImage {
         childImageSharp {
-        fluid(maxWidth: 300) {
+        fluid(maxWidth: 200) {
         ...GatsbyImageSharpFluid
       }
       }
