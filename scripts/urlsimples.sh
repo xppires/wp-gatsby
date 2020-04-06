@@ -10,9 +10,11 @@ do
   mv "$file" "${file%.html}"
 
   mkdir -p  "public$pagename/feed" &&  cp "public$pagename/index.html"  "public$pagename/feed/index.html"
+  sed -i 's/<meta data-react-helmet="true" name="description"/<meta name="robots" content="noindex" \/><meta data-react-helmet="true" name="description"/' "public$pagename/feed/index.html"
   mkdir -p  "public/page-data$pagename/feed" &&  cp "public/page-data$pagename/page-data.json"  "public/page-data$pagename/feed/page-data.json"
 
   mkdir -p  "public$pagename/trackback" &&  cp "public$pagename/index.html"  "public$pagename/trackback/index.html"
+  sed -i 's/<meta data-react-helmet="true" name="description"/<meta name="robots" content="noindex" \/><meta data-react-helmet="true" name="description"/' "public$pagename/trackback/index.html"
 
 
 done

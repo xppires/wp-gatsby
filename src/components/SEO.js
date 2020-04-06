@@ -3,6 +3,8 @@ import Helmet from 'react-helmet'
 import { withPrefix } from 'gatsby'
 import useSiteMetadata from '../hooks/use-site-config'
 
+import { globalHistory } from "@reach/router"
+
 const SEO = props => {
   const { isBlogPost, path = '', lang = 'en' } = props
   const {
@@ -20,13 +22,14 @@ const SEO = props => {
   const image = `${formatedSiteUrl}${imagePath}`
   const imageTwitter = `${formatedSiteUrl}${imagePathTwitter}`
   const description = props.description || siteDescription
-
+  const noIndex = globalHistory.location.pathname.indexOf('/feed') !== -1
   return (
     <Helmet title={title}>
       {/* General tags */}
       <html lang={lang} />
       <meta name="description" content={description.replace(/(\r\n|\n|\r)/gm, "")} />
       <link rel="canonical" href={formatedSiteUrl + withPrefix(path)} />
+      {noIndex ? <meta name="robots" content="noindex" /> : null}
 
       {/* OpenGraph tags */}
       <meta property="og:url" content={formatedSiteUrl + withPrefix(path)} />
